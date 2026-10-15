@@ -229,7 +229,7 @@ node tests/opencode-plugin.test.js
 node tests/omp-extension.test.js
 node tests/cursor-reporter.test.js
 bash tests/settings.sh
-# Optional: opens a temporary Wayland window to test the settings gear
+# Optional: opens a temporary Wayland window to test the settings gear and full-bar workspace targets
 bash tests/gear.sh
 ```
 
