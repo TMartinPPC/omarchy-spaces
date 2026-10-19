@@ -33,7 +33,10 @@ var DEFAULTS = {
   previews: true,             // live preview of a workspace on hover
   previewSize: "medium",      // "small" | "medium" | "large"
   previewLive: true,          // keep previews streaming; false = one frame
-  agentStatus: true           // badges for coding agents running in terminals
+  agentStatus: true,          // badges for coding agents running in terminals
+  activeIcon: "",             // replaces the focused pill's label; empty = off
+  wsIcon1: "", wsIcon2: "", wsIcon3: "", wsIcon4: "", wsIcon5: "",
+  wsIcon6: "", wsIcon7: "", wsIcon8: "", wsIcon9: "", wsIcon10: ""  // per-workspace labels; empty = number
 }
 
 var SHOW_APPS = ["all", "active", "hover", "hoverOnly"]
@@ -93,7 +96,18 @@ function resolveSettings(raw) {
     previews: bool(s.previews, d.previews),
     previewSize: oneOf(s.previewSize, PREVIEW_SIZES, d.previewSize),
     previewLive: bool(s.previewLive, d.previewLive),
-    agentStatus: bool(s.agentStatus, d.agentStatus)
+    agentStatus: bool(s.agentStatus, d.agentStatus),
+    activeIcon: clipIconString(s.activeIcon, d.activeIcon),
+    wsIcon1: clipIconString(s.wsIcon1, d.wsIcon1),
+    wsIcon2: clipIconString(s.wsIcon2, d.wsIcon2),
+    wsIcon3: clipIconString(s.wsIcon3, d.wsIcon3),
+    wsIcon4: clipIconString(s.wsIcon4, d.wsIcon4),
+    wsIcon5: clipIconString(s.wsIcon5, d.wsIcon5),
+    wsIcon6: clipIconString(s.wsIcon6, d.wsIcon6),
+    wsIcon7: clipIconString(s.wsIcon7, d.wsIcon7),
+    wsIcon8: clipIconString(s.wsIcon8, d.wsIcon8),
+    wsIcon9: clipIconString(s.wsIcon9, d.wsIcon9),
+    wsIcon10: clipIconString(s.wsIcon10, d.wsIcon10)
   }
 }
 
@@ -151,6 +165,25 @@ function workspaceLabel(id, focused, style) {
   if (style === "none") return ""
   if (style === "glyph" && focused) return "󱓻"
   return id === 10 ? "0" : String(id)
+}
+
+// Caps user-entered icon text at 32 graphemes, cutting without an ellipsis.
+// Non-string junk (numbers, null) falls back to the default, which keeps
+// malformed shell.json entries from leaking into labels.
+function clipIconString(value, fallback) {
+  if (typeof value !== "string") return fallback
+  var chars = graphemes(value)
+  return chars.length > 32 ? chars.slice(0, 32).join("") : chars.join("")
+}
+
+// Custom label for a workspace pill from the user's settings, or "" when none
+// applies (the pill then falls back to workspaceLabel). A per-workspace icon
+// is more specific than the active override, so it wins even while focused.
+function workspaceIcon(settings, id, focused) {
+  var n = Number(id)
+  var icon = n >= 1 && n <= 10 ? settings["wsIcon" + n] : ""
+  if (icon) return clipIconString(icon, "")
+  return focused && settings.activeIcon ? clipIconString(settings.activeIcon, "") : ""
 }
 
 // Stable key identifying "the same app" across windows.
@@ -612,7 +645,7 @@ if (typeof module !== "undefined") {
     parsePids: parsePids, normalizeAgentState: normalizeAgentState,
     agentProcessIds: agentProcessIds, pruneDeadAgents: pruneDeadAgents,
     previewWidth: previewWidth, previewDimensions: previewDimensions, monitorArea: monitorArea, previewLayout: previewLayout, durationFor: durationFor,
-    workspaceIds: workspaceIds, workspaceLabel: workspaceLabel, appKey: appKey,
+    workspaceIds: workspaceIds, workspaceLabel: workspaceLabel, workspaceIcon: workspaceIcon, appKey: appKey,
     sortWindows: sortWindows, iconItems: iconItems, truncate: truncate,
     focusedLabel: focusedLabel, webAppHost: webAppHost, appIdCandidates: appIdCandidates, iconPathScore: iconPathScore,
     iconNameFromPath: iconNameFromPath, stepWorkspace: stepWorkspace, mergedEntry: mergedEntry,

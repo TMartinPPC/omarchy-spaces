@@ -58,7 +58,7 @@ Item {
       spacing: Style.space(6)
       Repeater {
         model: [{value: "icons", label: "App icons"}, {value: "windows", label: "Windows"}, {value: "appearance", label: "Appearance"},
-                {value: "workspaces", label: "Workspaces"}, {value: "previews", label: "Previews"},
+                {value: "workspaces", label: "Workspaces"}, {value: "wsIcons", label: "Workspace icons"}, {value: "previews", label: "Previews"},
                 {value: "behavior", label: "Behaviour"}]
         delegate: Button {
           required property var modelData
@@ -208,6 +208,36 @@ Item {
             description: "Hold Super to peek at numbers. Needs keybindings, see README"
             key: "holdSuperNumbers"
           }
+
+      }
+      Column {
+        width: parent.width
+        spacing: Style.space(12)
+        visible: root.section === "wsIcons"
+          // ---- Workspace icons
+          SectionTitle { text: "WORKSPACE ICONS" }
+
+          Text {
+            width: parent.width
+            wrapMode: Text.WordWrap
+            text: "Emoji or Nerd Font glyphs work. An empty field shows the workspace number."
+            color: root.fg
+            opacity: 0.7
+            font.family: root.fontFamily
+            font.pixelSize: Style.font.caption
+          }
+
+          TextSetting { title: "ACTIVE WORKSPACE"; key: "activeIcon" }
+          TextSetting { title: "WORKSPACE 1"; key: "wsIcon1" }
+          TextSetting { title: "WORKSPACE 2"; key: "wsIcon2" }
+          TextSetting { title: "WORKSPACE 3"; key: "wsIcon3" }
+          TextSetting { title: "WORKSPACE 4"; key: "wsIcon4" }
+          TextSetting { title: "WORKSPACE 5"; key: "wsIcon5" }
+          TextSetting { title: "WORKSPACE 6"; key: "wsIcon6" }
+          TextSetting { title: "WORKSPACE 7"; key: "wsIcon7" }
+          TextSetting { title: "WORKSPACE 8"; key: "wsIcon8" }
+          TextSetting { title: "WORKSPACE 9"; key: "wsIcon9" }
+          TextSetting { title: "WORKSPACE 10"; key: "wsIcon10" }
 
       }
       Column {
@@ -442,6 +472,32 @@ Item {
       var delta = ({})
       delta[key] = !checked
       root.applySetting(delta)
+    }
+  }
+
+  component TextSetting: Column {
+    property string title: ""
+    property string key: ""
+
+    width: parent ? parent.width : 0
+    spacing: Style.space(8)
+
+    PanelSectionHeader {
+      text: parent.title
+      foreground: root.fg
+      fontFamily: root.fontFamily
+    }
+
+    TextField {
+      width: parent.width
+      activeFocusOnTab: true
+      foreground: root.fg
+      text: root.cfg[key] || ""
+      onEditingFinished: {
+        var delta = ({})
+        delta[key] = text
+        root.applySetting(delta)
+      }
     }
   }
 }
