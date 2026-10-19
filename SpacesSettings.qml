@@ -58,7 +58,7 @@ Item {
       spacing: Style.space(6)
       Repeater {
         model: [{value: "icons", label: "App icons"}, {value: "windows", label: "Windows"}, {value: "appearance", label: "Appearance"},
-                {value: "workspaces", label: "Workspaces"}, {value: "wsIcons", label: "Workspace icons"}, {value: "previews", label: "Previews"},
+                {value: "workspaces", label: "Workspaces"}, {value: "previews", label: "Previews"},
                 {value: "behavior", label: "Behaviour"}]
         delegate: Button {
           required property var modelData
@@ -209,11 +209,6 @@ Item {
             key: "holdSuperNumbers"
           }
 
-      }
-      Column {
-        width: parent.width
-        spacing: Style.space(12)
-        visible: root.section === "wsIcons"
           // ---- Workspace icons
           SectionTitle { text: "WORKSPACE ICONS" }
 
