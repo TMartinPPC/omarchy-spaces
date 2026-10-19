@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import qs.Commons
 import qs.Ui
 
@@ -188,14 +189,36 @@ Item {
               font.pixelSize: Style.font.caption
             }
 
-            TextSetting { title: "ACTIVE WORKSPACE"; key: "activeIcon" }
+            // Bounded scroll area: ten workspaces must not push the rest of
+            // the form (or the footer) off the panel.
+            Item {
+              width: parent.width
+              height: Math.min(iconFields.implicitHeight, Style.space(300))
 
-            Repeater {
-              model: Math.max(0, root.cfg.persistentWorkspaces)
-              delegate: TextSetting {
-                required property int index
-                title: "WORKSPACE " + (index + 1)
-                key: "wsIcon" + (index + 1)
+              ScrollView {
+                id: iconScroll
+                anchors.fill: parent
+                clip: true
+                contentWidth: availableWidth
+                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                ScrollBar.vertical.policy: iconFields.implicitHeight > height ? ScrollBar.AsNeeded : ScrollBar.AlwaysOff
+
+                Column {
+                  id: iconFields
+                  width: iconScroll.availableWidth
+                  spacing: Style.space(12)
+
+                  TextSetting { title: "ACTIVE WORKSPACE"; key: "activeIcon" }
+
+                  Repeater {
+                    model: Math.max(0, root.cfg.persistentWorkspaces)
+                    delegate: TextSetting {
+                      required property int index
+                      title: "WORKSPACE " + (index + 1)
+                      key: "wsIcon" + (index + 1)
+                    }
+                  }
+                }
               }
             }
           }
