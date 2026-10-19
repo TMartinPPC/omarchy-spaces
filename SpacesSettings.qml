@@ -167,8 +167,37 @@ Item {
             options: [
               { value: "number", label: "Number" },
               { value: "glyph", label: "Glyph" },
+              { value: "custom", label: "Custom" },
               { value: "none", label: "None" }
             ]
+          }
+
+          // ---- Workspace icons (label style "custom")
+          Column {
+            width: parent.width
+            spacing: Style.space(12)
+            visible: root.cfg.labelStyle === "custom"
+
+            Text {
+              width: parent.width
+              wrapMode: Text.WordWrap
+              text: "Emoji or Nerd Font glyphs work. An empty field shows the workspace number."
+              color: root.fg
+              opacity: 0.7
+              font.family: root.fontFamily
+              font.pixelSize: Style.font.caption
+            }
+
+            TextSetting { title: "ACTIVE WORKSPACE"; key: "activeIcon" }
+
+            Repeater {
+              model: Math.max(0, root.cfg.persistentWorkspaces)
+              delegate: TextSetting {
+                required property int index
+                title: "WORKSPACE " + (index + 1)
+                key: "wsIcon" + (index + 1)
+              }
+            }
           }
 
           ChoiceSetting {
@@ -208,31 +237,6 @@ Item {
             description: "Hold Super to peek at numbers. Needs keybindings, see README"
             key: "holdSuperNumbers"
           }
-
-          // ---- Workspace icons
-          SectionTitle { text: "WORKSPACE ICONS" }
-
-          Text {
-            width: parent.width
-            wrapMode: Text.WordWrap
-            text: "Emoji or Nerd Font glyphs work. An empty field shows the workspace number."
-            color: root.fg
-            opacity: 0.7
-            font.family: root.fontFamily
-            font.pixelSize: Style.font.caption
-          }
-
-          TextSetting { title: "ACTIVE WORKSPACE"; key: "activeIcon" }
-          TextSetting { title: "WORKSPACE 1"; key: "wsIcon1" }
-          TextSetting { title: "WORKSPACE 2"; key: "wsIcon2" }
-          TextSetting { title: "WORKSPACE 3"; key: "wsIcon3" }
-          TextSetting { title: "WORKSPACE 4"; key: "wsIcon4" }
-          TextSetting { title: "WORKSPACE 5"; key: "wsIcon5" }
-          TextSetting { title: "WORKSPACE 6"; key: "wsIcon6" }
-          TextSetting { title: "WORKSPACE 7"; key: "wsIcon7" }
-          TextSetting { title: "WORKSPACE 8"; key: "wsIcon8" }
-          TextSetting { title: "WORKSPACE 9"; key: "wsIcon9" }
-          TextSetting { title: "WORKSPACE 10"; key: "wsIcon10" }
 
       }
       Column {

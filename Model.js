@@ -18,7 +18,7 @@ var DEFAULTS = {
   titleLength: 24,
   activeStyle: "subtle",      // "subtle" | "solid" | "accent"
   pillBackground: true,       // quiet fill behind occupied/hovered pills
-  labelStyle: "number",       // "number" | "glyph" | "none"
+  labelStyle: "number",       // "number" | "glyph" | "none" | "custom"
   holdSuperNumbers: false,    // show workspace numbers while Super is held (needs bindings)
   animations: true,
   animationSpeed: "normal",   // "slow" | "normal" | "fast"
@@ -46,7 +46,7 @@ var ACTIVE_CLICKS = ["none", "previous"]
 var SETTINGS_BUTTONS = ["hover", "always", "never"]
 var PREVIEW_SIZES = ["small", "medium", "large"]
 var ACTIVE_STYLES = ["subtle", "solid", "accent"]
-var LABEL_STYLES = ["number", "glyph", "none"]
+var LABEL_STYLES = ["number", "glyph", "none", "custom"]
 var SPEEDS = ["slow", "normal", "fast"]
 
 function clampInt(value, min, max, fallback) {
@@ -177,9 +177,12 @@ function clipIconString(value, fallback) {
 }
 
 // Custom label for a workspace pill from the user's settings, or "" when none
-// applies (the pill then falls back to workspaceLabel). A per-workspace icon
-// is more specific than the active override, so it wins even while focused.
+// applies (the pill then falls back to workspaceLabel). Only the "custom"
+// label style consults the icon fields; every other style keeps its stock
+// behaviour. A per-workspace icon is more specific than the active override,
+// so it wins even while focused.
 function workspaceIcon(settings, id, focused) {
+  if (settings.labelStyle !== "custom") return ""
   var n = Number(id)
   var icon = n >= 1 && n <= 10 ? settings["wsIcon" + n] : ""
   if (icon) return clipIconString(icon, "")

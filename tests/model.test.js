@@ -410,12 +410,24 @@ test("workspace icon strings are capped at 32 graphemes", () => {
   assert.ok(long.wsIcon5.length <= 32 * family.length)
 })
 
+test("workspaceIcon only applies to the custom label style", () => {
+  const fields = { wsIcon3: "\u2302", activeIcon: "\u2699" }
+  // Number, glyph and none keep their stock behaviour with fields present.
+  for (const style of ["number", "glyph", "none"]) {
+    const s = M.resolveSettings({ ...fields, labelStyle: style })
+    assert.strictEqual(M.workspaceIcon(s, 3, true), "", style)
+    assert.strictEqual(M.workspaceIcon(s, 7, true), "", style)
+  }
+  const custom = M.resolveSettings({ ...fields, labelStyle: "custom" })
+  assert.strictEqual(M.workspaceIcon(custom, 3, false), "\u2302")
+})
+
 test("workspaceIcon falls back to the label and honours precedence", () => {
-  const off = M.resolveSettings({})
+  const off = M.resolveSettings({ labelStyle: "custom" })
   assert.strictEqual(M.workspaceIcon(off, 3, true), "")
   assert.strictEqual(M.workspaceIcon(off, 10, false), "")
 
-  const named = M.resolveSettings({ wsIcon3: "\u2302", wsIcon10: "0\uFE0F\u20E3", activeIcon: "\u2699" })
+  const named = M.resolveSettings({ wsIcon3: "\u2302", wsIcon10: "0\uFE0F\u20E3", activeIcon: "\u2699", labelStyle: "custom" })
   assert.strictEqual(M.workspaceIcon(named, 3, false), "\u2302")
   assert.strictEqual(M.workspaceIcon(named, 10, false), "0\uFE0F\u20E3")
   // Unnamed workspaces fall back, and the focused one shows the override.
